@@ -1,0 +1,776 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Справочник автомобилий API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/brands": {
+            "get": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "Get list of car brands",
+                "description": "Returns paginated list of car brands with counts of models and cars",
+                "operationId": "getBrandsList",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BrandResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string"
+                                                },
+                                                "last": {
+                                                    "type": "string"
+                                                },
+                                                "prev": {
+                                                    "type": "string"
+                                                },
+                                                "next": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "from": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "to": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cars": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Get list of user's cars",
+                "description": "Returns paginated list of cars belonging to the authenticated user",
+                "operationId": "getCarsList",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CarResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Create a new car",
+                "description": "Create a new car for the authenticated user",
+                "operationId": "createCar",
+                "requestBody": {
+                    "description": "Car data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCarRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Car created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CarResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "brand_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The brand id field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cars/{id}": {
+            "get": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Get car details",
+                "description": "Get details of a specific car",
+                "operationId": "getCar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Car ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CarResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - car doesn't belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Car not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No query results for model [App\\\\Models\\\\Car] {id}"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Update a car",
+                "description": "Update an existing car",
+                "operationId": "updateCar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Car ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Car data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCarRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Car updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CarResource"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - car doesn't belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cars"
+                ],
+                "summary": "Delete a car",
+                "description": "Delete an existing car",
+                "operationId": "deleteCar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Car ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Car deleted successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden - car doesn't belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "This action is unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Car not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/car-models": {
+            "get": {
+                "tags": [
+                    "Car Models"
+                ],
+                "summary": "Get list of car models",
+                "description": "Returns paginated list of car models with brand information and cars count",
+                "operationId": "getCarModelsList",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "brand_id",
+                        "in": "query",
+                        "description": "Filter by brand ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CarModelResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreCarRequest": {
+                "required": [
+                    "brand_id",
+                    "car_model_id"
+                ],
+                "properties": {
+                    "brand_id": {
+                        "description": "Brand ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "car_model_id": {
+                        "description": "Car model ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "year": {
+                        "description": "Year of manufacture",
+                        "type": "integer",
+                        "example": 2020,
+                        "nullable": true
+                    },
+                    "mileage": {
+                        "description": "Mileage in km",
+                        "type": "integer",
+                        "example": 50000,
+                        "nullable": true
+                    },
+                    "color": {
+                        "description": "Car color",
+                        "type": "string",
+                        "example": "Red",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCarRequest": {
+                "properties": {
+                    "brand_id": {
+                        "description": "Brand ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "car_model_id": {
+                        "description": "Car model ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "year": {
+                        "description": "Year of manufacture",
+                        "type": "integer",
+                        "example": 2020,
+                        "nullable": true
+                    },
+                    "mileage": {
+                        "description": "Mileage in km",
+                        "type": "integer",
+                        "example": 50000,
+                        "nullable": true
+                    },
+                    "color": {
+                        "description": "Car color",
+                        "type": "string",
+                        "example": "Blue",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "BrandResource": {
+                "title": "Brand Resource",
+                "description": "Brand resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Brand ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Brand name",
+                        "type": "string",
+                        "example": "Toyota"
+                    },
+                    "car_models_count": {
+                        "description": "Number of car models for this brand",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "cars_count": {
+                        "description": "Number of cars for this brand",
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "CarModelResource": {
+                "title": "Car Model Resource",
+                "description": "Car model resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Car model ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Car model name",
+                        "type": "string",
+                        "example": "Camry"
+                    },
+                    "brand": {
+                        "$ref": "#/components/schemas/BrandResource"
+                    },
+                    "cars_count": {
+                        "description": "Number of cars for this model",
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "CarResource": {
+                "title": "Car Resource",
+                "description": "Car resource representation",
+                "properties": {
+                    "id": {
+                        "description": "Car ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "brand": {
+                        "$ref": "#/components/schemas/BrandResource"
+                    },
+                    "car_model": {
+                        "$ref": "#/components/schemas/CarModelResource"
+                    },
+                    "user": {
+                        "description": "User information",
+                        "nullable": true
+                    },
+                    "year": {
+                        "description": "Year of manufacture",
+                        "type": "integer",
+                        "example": 2020,
+                        "nullable": true
+                    },
+                    "mileage": {
+                        "description": "Mileage in km",
+                        "type": "integer",
+                        "example": 50000,
+                        "nullable": true
+                    },
+                    "color": {
+                        "description": "Car color",
+                        "type": "string",
+                        "example": "Red",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter token in format: Bearer <token>",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            },
+            "api_key": {
+                "type": "apiKey",
+                "name": "X-API-KEY",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Brands",
+            "description": "Operations related to brands"
+        },
+        {
+            "name": "Cars",
+            "description": "Operations related to cars"
+        },
+        {
+            "name": "Car Models",
+            "description": "Car Models"
+        }
+    ]
+}

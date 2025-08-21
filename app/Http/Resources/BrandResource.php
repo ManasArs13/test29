@@ -6,7 +6,52 @@ use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin Brand */
+/**
+ * @OA\Schema(
+ *     schema="BrandResource",
+ *     type="object",
+ *     title="Brand Resource",
+ *     description="Brand resource representation",
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="Brand ID",
+ *         example=1
+ *     ),
+ *     @OA\Property(
+ *         property="name",
+ *         type="string",
+ *         description="Brand name",
+ *         example="Toyota"
+ *     ),
+ *     @OA\Property(
+ *         property="car_models_count",
+ *         type="integer",
+ *         description="Number of car models for this brand",
+ *         example=5
+ *     ),
+ *     @OA\Property(
+ *         property="cars_count",
+ *         type="integer",
+ *         description="Number of cars for this brand",
+ *         example=25
+ *     ),
+ *     @OA\Property(
+ *         property="created_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Creation timestamp",
+ *         example="2024-01-01T12:00:00Z"
+ *     ),
+ *     @OA\Property(
+ *         property="updated_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="Last update timestamp",
+ *         example="2024-01-01T12:00:00Z"
+ *     )
+ * )
+ */
 class BrandResource extends JsonResource
 {
     public function toArray(Request $request)

@@ -11,7 +11,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Routing\Controller;
 
-
+/**
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Enter token in format: Bearer <token>"
+ * )
+ */
 class AuthController extends Controller
 {
     public function __construct()
