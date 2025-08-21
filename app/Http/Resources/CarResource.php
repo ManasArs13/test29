@@ -20,13 +20,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     ),
  *     @OA\Property(
  *         property="brand",
- *         ref="#/components/schemas/BrandResource",
- *         description="Brand information"
+ *         type="integer",
+ *         description="brand ID",
+ *         example=1
  *     ),
  *     @OA\Property(
  *         property="car_model",
- *         ref="#/components/schemas/CarModelResource",
- *         description="Car model information"
+ *         type="integer",
+ *         description="car_model ID",
+ *         example=1
  *     ),
  *     @OA\Property(
  *         property="user",
@@ -84,9 +86,6 @@ class CarResource extends JsonResource
 
             'brand_id' => $this->brand_id,
             'car_model_id' => $this->car_model_id,
-
-            'brand' => new BrandResource($this->whenLoaded('brand')),
-            'carModel' => new CarModelResource($this->whenLoaded('carModel')),
         ];
     }
 }

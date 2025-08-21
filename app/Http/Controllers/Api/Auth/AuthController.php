@@ -20,13 +20,37 @@ use Illuminate\Routing\Controller;
  *     description="Enter token in format: Bearer <token>"
  * )
  */
+
+/**
+ * Контроллер для аутентификации и управления пользователями
+ *
+ * @group Аутентификация
+ */
 class AuthController extends Controller
 {
+    /**
+     * Конструктор контроллера
+     *
+     * Устанавливает middleware для аутентификации, кроме метода login.
+     */
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
+    /**
+     * Регистрация нового пользователя
+     *
+     * Создает нового пользователя и возвращает access token.
+     *
+     * @bodyParam name string required Имя пользователя. Example: John Doe
+     * @bodyParam email string required Email пользователя. Example: john@example.com
+     * @bodyParam password string required Пароль пользователя (мин. 8 символов). Example: password123
+     * @bodyParam password_confirmation string required Подтверждение пароля. Example: password123
+     *
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
         try {
@@ -54,6 +78,18 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Аутентификация пользователя
+     *
+     * Авторизует пользователя и возвращает access token.
+     *
+     * @bodyParam email string required Email пользователя. Example: john@example.com
+     * @bodyParam password string required Пароль пользователя. Example: password123
+     *
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = request(['email', 'password']);
@@ -65,6 +101,15 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+    /**
+     * Выход из системы
+     *
+     * Деактивирует текущий access token пользователя.
+     *
+     * @header Authorization Bearer {access_token}
+     *
+     * @return JsonResponse
+     */
     public function logout()
     {
         auth()->logout();
@@ -72,11 +117,26 @@ class AuthController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
+    /**
+     * Обновление access token
+     *
+     * Обновляет истекший access token с помощью refresh token.
+     *
+     * @header Authorization Bearer {access_token}
+     *
+     * @return JsonResponse
+     */
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
     }
 
+    /**
+     * Форматирование ответа с токеном
+     *
+     * @param string $token JWT токен
+     * @return JsonResponse
+     */
     protected function respondWithToken($token)
     {
         return response()->json([
@@ -86,6 +146,16 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Получение информации о текущем пользователе
+     *
+     * Возвращает данные аутентифицированного пользователя с количеством его автомобилей.
+     *
+     * @header Authorization Bearer {access_token}
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function user(Request $request): JsonResponse
     {
         return response()->json(auth()->user()->loadCount('cars'));

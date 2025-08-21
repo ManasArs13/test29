@@ -702,10 +702,14 @@
                         "example": 1
                     },
                     "brand": {
-                        "$ref": "#/components/schemas/BrandResource"
+                        "description": "brand ID",
+                        "type": "integer",
+                        "example": 1
                     },
                     "car_model": {
-                        "$ref": "#/components/schemas/CarModelResource"
+                        "description": "car_model ID",
+                        "type": "integer",
+                        "example": 1
                     },
                     "user": {
                         "description": "User information",
@@ -746,12 +750,6 @@
             }
         },
         "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "description": "Enter token in format: Bearer <token>",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
-            },
             "api_key": {
                 "type": "apiKey",
                 "name": "X-API-KEY",
